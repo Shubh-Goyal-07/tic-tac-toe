@@ -1,0 +1,7 @@
+{
+    "0":{
+    "Name": "Neon",
+    "Color": ["#06f3fa", "#deeff5", "#fb1349"],
+    "Font": ["Arial", 80, 0, 1, "#06f3fa"]
+}
+}
