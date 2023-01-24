@@ -29,8 +29,15 @@ def block(screen):
     else:
         return False
 
-    
+global score_1, score_2, np_board
+score_1 = 0
+score_2 = 0
+np_board = np.array([['' for i in range(0, 3)] for j in range(0, 3)])
+
+
 def game_screen(player, theme_num='0'):
+    global score_1, score_2, np_board
+
     # importing theme configuration json file
     with open("source/theme_config.json", encoding='utf-8') as load_theme:
         theme_config = json.load(load_theme)
@@ -41,16 +48,10 @@ def game_screen(player, theme_num='0'):
     # initializing pygame
     pygame.init()
     screen_size = (600, 700)
-
-    score_1 = 0
-    score_2 = 0
-
     turn_arr = ['o', 'x']
     block_arr = []
     turn = 0
-    
-    board = [['' for i in range(0, 3)] for j in range(0, 3)]
-    board = np.array(board)
+    result = None
 
     # creating window
     screen = pygame.display.set_mode(screen_size)
@@ -74,15 +75,7 @@ def game_screen(player, theme_num='0'):
     bg_img = pygame.sprite.GroupSingle()
     bg_img.add(bg_sprite)
 
-    board_sprite = board(theme_num, screen.get_width(), screen.get_height())
-    board_img = pygame.sprite.GroupSingle()
-    board_img.add(board_sprite)
-
-    board_sprite = board(theme_num, screen.get_width(), screen.get_height())
-    board_img = pygame.sprite.GroupSingle()
-    board_img.add(board_sprite)
-
-    board_sprite = board(theme_num, screen.get_width(), screen.get_height())
+    board_sprite = board_spr(theme_num, screen.get_width(), screen.get_height())
     board_img = pygame.sprite.GroupSingle()
     board_img.add(board_sprite)
 
@@ -91,6 +84,12 @@ def game_screen(player, theme_num='0'):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            
+            # if result:
+            #     if event. == pygame.K_SPACE:
+            #     # if pygame.mouse.get_pressed()[0]:
+            #         np_board = np.array([['' for i in range(0, 3)] for j in range(0, 3)])
+            #         game_screen(player, theme_num)
 
         screen.fill((0, 0, 0))
 
@@ -99,42 +98,112 @@ def game_screen(player, theme_num='0'):
         screen.blit(head_font_surf, head_font_rect)
         screen.blit(player1_font_surf, player1_font_rect)
         screen.blit(player2_font_surf, player2_font_rect)
-
+        
         if len(block_arr)!=0:
             for i in block_arr:
                 i.draw(screen)
-
+                
         if player == "Player 2":
             if pygame.mouse.get_pressed()[0]:
                 pos = block(screen)
                 print(pos)
-
+                
                 if pos:
                     if turn_arr[turn] == 'o':
                         o_sprite = o(theme_num, 60 + (pos[0]+1)*120, 110 + (pos[1]+1)*120)
                         o_img = pygame.sprite.GroupSingle()
                         o_img.add(o_sprite)
-
+                        
                         block_arr.append(o_img)
-
+                        
                         turn = (turn+1)%2
-
-                        board[pos[0]][pos[1]] == 'O'
-
+                        
+                        np_board[pos[0]][pos[1]] = 'O'
+                        
                     else:
                         x_sprite = x(theme_num, 60 + (pos[0]+1)*120, 110 + (pos[1]+1)*120)
+                        x_img = pygame.sprite.GroupSingle()
+                        x_img.add(x_sprite)
+                        
+                        block_arr.append(x_img)
+                        
+                        turn = (turn+1)%2
+                        
+                        np_board[pos[0]][pos[1]] = 'X'
+
+            result = checkWinner(np_board)
+            if result:
+                screen.fill(theme_config['Color'][0])
+                if result == "Draw":
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render(result + '!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+
+                elif result=="O":
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render('Player 1 Wins !!!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+                    score_1 += 1
+                else:
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render('Player 2 Wins !!!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+                    score_2 += 1
+                    
+        else:
+            if pygame.mouse.get_pressed()[0]:
+                
+                pos = block(screen)
+                print(pos)
+
+                if pos:
+                    o_sprite = o(theme_num, 60 + (pos[0]+1)*120, 110 + (pos[1]+1)*120)
+                    o_img = pygame.sprite.GroupSingle()
+                    o_img.add(o_sprite)
+
+                    block_arr.append(o_img)
+
+                    turn = (turn+1)%2
+
+                    np_board[pos[0]][pos[1]] = 'O'
+
+                    # print('Computer')
+
+                    x_pos = playWithComputer(np_board)
+                    # print(x_pos)
+                    if x_pos:
+                        x_sprite = x(theme_num, 60 + (x_pos[0]+1)*120, 110 + (x_pos[1]+1)*120)
                         x_img = pygame.sprite.GroupSingle()
                         x_img.add(x_sprite)
 
                         block_arr.append(x_img)
 
-                        turn = (turn+1) % 2
+                        np_board[x_pos[0]][x_pos[1]] = 'X'
 
-                        board[pos[0]][pos[1]] == 'X'
-                        
-                if checkWinner(board):
-                    if checkWinner(board) == "Draw":
-                        
+            result = checkWinner(np_board)
+            if result:
+                screen.fill(theme_config['Color'][0])
+                if result == "Draw":
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render(result + '!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+
+                elif result == "O":
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render('Player 1 Wins !!!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+                    score_1 += 1
+                else:
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render('Computer Wins !!!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+                    score_2 += 1
 
         clock.tick(12)
 
@@ -144,4 +213,4 @@ def game_screen(player, theme_num='0'):
     pygame.quit()
 
 
-game_screen('Player 2')
+# game_screen('Player 2')

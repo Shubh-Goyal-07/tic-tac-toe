@@ -104,7 +104,7 @@ def checkWinner(board):
     if board[0,2] == board[2,0] == board[1,1]:
         winner = board[0,2]
 
-    if winner == 'none' and not isEmpty(board):
+    if winner == None and not isEmpty(board):
         winner = 'Draw'
     
     return winner

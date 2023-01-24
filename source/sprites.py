@@ -9,7 +9,7 @@ class bg(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x/2, y/2))
 
 
-class board(pygame.sprite.Sprite):
+class board_spr(pygame.sprite.Sprite):
     def __init__(self, theme_num, x, y):
         super().__init__()
         self.image = pygame.image.load('graphics/theme/' + theme_num + '/board.png').convert_alpha()
