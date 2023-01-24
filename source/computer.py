@@ -109,21 +109,6 @@ def checkWinner(board):
     
     return winner
 
-def playWithComputer(board):
-    score=-100
-    for i in range(3):
-        for j in range(3):
-            if board[i, j]=='':
-                x = max(checkCol(board, i, j), checkRow(board, i, j), checkDiag1(board, i, j), checkDiag2(board, i, j))
-                if x>score:
-                    score = x
-                    a = (i,j)
-
-    # board[a[0], a[1]] = 'X'
-    # return board
-
-    return a
-
 def isEmpty(board):
     flag=0
     for i in range(3):
@@ -136,6 +121,24 @@ def isEmpty(board):
         return True
     else:
         return False
+
+def playWithComputer(board):
+    score=-100
+    if not isEmpty(board):
+        return None
+
+    for i in range(3):
+        for j in range(3):
+            if board[i, j]=='':
+                x = max(checkCol(board, i, j), checkRow(board, i, j), checkDiag1(board, i, j), checkDiag2(board, i, j))
+                if x>score:
+                    score = x
+                    a = (i,j)
+
+    # board[a[0], a[1]] = 'X'
+    # return board
+
+    return a
 
 board = np.array([['', '', ''], ['', '', ''], ['', '', '']])
 
