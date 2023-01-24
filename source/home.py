@@ -48,6 +48,7 @@ while True:
             exit()
 
     screen.fill((0, 0, 0))
+    pygame.mouse.set_visible(False)
 
     mouse_pos = pygame.mouse.get_pos()
 
@@ -58,40 +59,37 @@ while True:
     pygame.draw.rect(screen, theme_config["0"]["Color"][1], (0, 0, 600, 700), 3)
     pygame.draw.rect(screen, theme_config["0"]["Color"][1], (5, 5, 590, 690), 3)
 
-    if  comp_font_rect.topleft[0] <= mouse_pos[0] <= comp_font_rect.bottomright[0] and comp_font_rect.topleft[1] <= mouse_pos[1] <= comp_font_rect.bottomright[1]:
+    # computer button
+    if comp_font_rect.topleft[0] <= mouse_pos[0] <= comp_font_rect.bottomright[0] and comp_font_rect.topleft[1] <= mouse_pos[1] <= comp_font_rect.bottomright[1]:
         pygame.draw.rect(screen, theme_config["0"]["Color"][1],[comp_font_rect.topleft[0]-10, comp_font_rect.topleft[1]-6, comp_font_rect.width + 20, comp_font_rect.height + 12], border_radius=10)
         screen.blit(comp_font_surf, comp_font_rect)
 
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pygame.quit()
-                game_screen(0)
-                exit()
-                
+        if pygame.mouse.get_pressed()[0]:
+            pygame.quit()
+            game_screen('Computer')
+            exit()
 
     else:
         screen.blit(comp_font_surf, comp_font_rect)
         pygame.draw.rect(screen, theme_config["0"]["Color"][0],[comp_font_rect.topleft[0]-10, comp_font_rect.topleft[1]-6, comp_font_rect.width + 20, comp_font_rect.height + 12], 2, 10)
 
-
-    if  player_font_rect.topleft[0] <= mouse_pos[0] <= player_font_rect.bottomright[0] and player_font_rect.topleft[1] <= mouse_pos[1] <= player_font_rect.bottomright[1]:
-        pygame.draw.rect(screen, theme_config["0"]["Color"][1],[player_font_rect.topleft[0]-10, player_font_rect.topleft[1]-6, player_font_rect.width + 20, player_font_rect.height + 12], border_radius=10)
+    # player button
+    if player_font_rect.topleft[0] <= mouse_pos[0] <= player_font_rect.bottomright[0] and player_font_rect.topleft[1] <= mouse_pos[1] <= player_font_rect.bottomright[1]:
+        pygame.draw.rect(screen, theme_config["0"]["Color"][1], [player_font_rect.topleft[0]-10, player_font_rect.topleft[1]-6, player_font_rect.width + 20, player_font_rect.height + 12], border_radius=10)
         screen.blit(player_font_surf, player_font_rect)
-        
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pygame.quit()
-                game_screen(0)
-                exit()
+
+        if pygame.mouse.get_pressed()[0]:
+            pygame.quit()
+            game_screen('Player 2')
+            exit()
 
     else:
         screen.blit(player_font_surf, player_font_rect)
-        pygame.draw.rect(screen, theme_config["0"]["Color"][0],[player_font_rect.topleft[0]-10, player_font_rect.topleft[1]-6, player_font_rect.width + 20, player_font_rect.height + 12], 2, 10)
+        pygame.draw.rect(screen, theme_config["0"]["Color"][0], [player_font_rect.topleft[0]-10, player_font_rect.topleft[1]-6, player_font_rect.width + 20, player_font_rect.height + 12], 2, 10)
 
     screen.blit(player_font_surf, player_font_rect)
 
     pygame.draw.circle(screen, theme_config["0"]["Color"][2], mouse_pos, 5)
-
 
     pygame.display.update()
     # flip() updates the screen to make our changes visible

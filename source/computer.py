@@ -89,7 +89,7 @@ def checkDiag2(board, i, j):
     return 0
 
 def checkWinner(board):
-    winner = 'none'
+    winner = None
 
     for i in range(3):
         if board[i,0] == board[i,1] == board[i,2]:
@@ -105,7 +105,7 @@ def checkWinner(board):
         winner = board[0,2]
 
     if winner == 'none' and not isEmpty(board):
-        winner = 'tie'
+        winner = 'Draw'
     
     return winner
 
