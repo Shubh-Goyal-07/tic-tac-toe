@@ -29,14 +29,15 @@ def block(screen):
     else:
         return False
 
-global score_1, score_2, np_board
+global score_1, score_2, np_board, result
 score_1 = 0
 score_2 = 0
 np_board = np.array([['' for i in range(0, 3)] for j in range(0, 3)])
+result = None
 
 
 def game_screen(player, theme_num='0'):
-    global score_1, score_2, np_board
+    global score_1, score_2, np_board, result
 
     # importing theme configuration json file
     with open("source/theme_config.json", encoding='utf-8') as load_theme:
@@ -132,26 +133,26 @@ def game_screen(player, theme_num='0'):
                         np_board[pos[0]][pos[1]] = 'X'
 
                 result = checkWinner(np_board)
-                if result:
-                    screen.fill(theme_config['Color'][0])
-                    if result == "Draw":
-                        result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
-                        result_font_surf = result_font.render(result + '!', False, "#fb1349", None)
-                        result_font_rect = result_font_surf.get_rect(center=(300, 300))
-                        screen.blit(result_font_surf, result_font_rect)
+            if result:
+                screen.fill(theme_config['Color'][0])
+                if result == "Draw":
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render(result + '!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
 
-                    elif result=="O":
-                        result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
-                        result_font_surf = result_font.render('Player 1 Wins !!!', False, "#fb1349", None)
-                        result_font_rect = result_font_surf.get_rect(center=(300, 300))
-                        screen.blit(result_font_surf, result_font_rect)
-                        score_1 += 1
-                    else:
-                        result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
-                        result_font_surf = result_font.render('Player 2 Wins !!!', False, "#fb1349", None)
-                        result_font_rect = result_font_surf.get_rect(center=(300, 300))
-                        screen.blit(result_font_surf, result_font_rect)
-                        score_2 += 1
+                elif result=="O":
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render('Player 1 Wins !!!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+                    score_1 += 1
+                else:
+                    result_font = pygame.font.SysFont(font_config[0], 60, font_config[2], font_config[3])
+                    result_font_surf = result_font.render('Player 2 Wins !!!', False, "#fb1349", None)
+                    result_font_rect = result_font_surf.get_rect(center=(300, 300))
+                    screen.blit(result_font_surf, result_font_rect)
+                    score_2 += 1
                     
         else:
             if pygame.mouse.get_pressed()[0]:
@@ -165,8 +166,6 @@ def game_screen(player, theme_num='0'):
                     o_img.add(o_sprite)
 
                     block_arr.append(o_img)
-
-                    turn = (turn+1)%2
 
                     np_board[pos[0]][pos[1]] = 'O'
                     # print('Computer')
